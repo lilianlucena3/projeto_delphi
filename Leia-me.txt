@@ -1,0 +1,13 @@
+Olá, sou Lilian Lucena, desenvolvedora. E esse é o projeto teste que me foi enviado.
+os dados do banco são: 
+user: root
+password: 
+host: localhost
+
+Acesso ao meu portifólio:
+Git:https://github.com/lilianlucena3
+LinkedIn: https://www.linkedin.com/in/lilian-lucena-68a73314b/
+
+Agradeço a oportunidade.
+
+att

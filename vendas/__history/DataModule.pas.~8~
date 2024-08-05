@@ -1,0 +1,45 @@
+unit DataModule;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DBXMySQL, Data.DB, Data.SqlExpr,
+  Data.FMTBcd, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error,
+  FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
+  FireDAC.Stan.Async, FireDAC.Phys, FireDAC.ConsoleUI.Wait, FireDAC.Comp.Client,
+  Datasnap.DBClient, Datasnap.Provider;
+
+type
+  TDataModule1 = class(TDataModule)
+    SQLConnection1: TSQLConnection;
+    SQLDataSet1: TSQLDataSet;
+    SQLDataSet1codigo: TIntegerField;
+    SQLDataSet1nome: TStringField;
+    SQLDataSet1cidade: TStringField;
+    SQLDataSet1uf: TStringField;
+    DataSetProvider1: TDataSetProvider;
+    ClientDataSet1: TClientDataSet;
+    ClientDataSet1codigo: TIntegerField;
+    ClientDataSet1nome: TStringField;
+    ClientDataSet1cidade: TStringField;
+    ClientDataSet1uf: TStringField;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  DataModule1: TDataModule1;
+
+implementation
+
+{%CLASSGROUP 'System.Classes.TPersistent'}
+
+{$R *.dfm}
+
+procedure DataModule1.ObtemProdutos;
+begin
+  stpObtemProdutos.Open;
+end;
+end.

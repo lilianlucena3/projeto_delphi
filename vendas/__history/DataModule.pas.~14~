@@ -1,0 +1,66 @@
+unit DataModule;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Comp.Client, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
+  FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Comp.DataSet, FireDAC.DatS, FireDAC.DApt.Intf,
+  FireDAC.DApt, FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef, Data.DBXMySQL,
+  Data.FMTBcd, FireDAC.Stan.Param, Datasnap.DBClient, Datasnap.Provider,
+  Data.DB, Data.SqlExpr;
+
+type
+  TDataModule1 = class(TDataModule)
+    FDQuery1: TFDQuery;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure InserirOuRemoverProduto(p_condicao: Char; p_codProduto: Integer;
+      p_quantidade: Integer; p_vlUnitario: Currency; p_descricao: string; p_precVenda: Currency);
+    procedure AtualizarGrid;
+  end;
+
+var
+  DataModule1: TDataModule1;
+
+implementation
+
+{%CLASSGROUP 'System.Classes.TPersistent'}
+
+{$R *.dfm}
+
+procedure TDataModule1.InserirOuRemoverProduto(p_condicao: Char; p_codProduto: Integer;
+  p_quantidade: Integer; p_vlUnitario: Currency; p_descricao: string; p_precVenda: Currency);
+begin
+  // Configura a consulta para chamar a stored procedure
+  FDQuery1.SQL.Text := 'CALL Insere_Remove_Produtos(:p_condicao, :p_codProduto, :p_quantidade, :p_vlUnitario, :p_descricao, :p_precVenda)';
+
+  // Define os parâmetros da consulta
+  FDQuery1.ParamByName('p_condicao').AsString := p_condicao;
+  FDQuery1.ParamByName('p_codProduto').AsInteger := p_codProduto;
+  FDQuery1.ParamByName('p_quantidade').AsInteger := p_quantidade;
+  FDQuery1.ParamByName('p_vlUnitario').AsCurrency := p_vlUnitario;
+  FDQuery1.ParamByName('p_descricao').AsString := p_descricao;
+  FDQuery1.ParamByName('p_precVenda').AsCurrency := p_precVenda;
+
+  // Executa a consulta
+  try
+    FDQuery1.ExecSQL;
+  except
+   // on E: Exception do
+     // ShowMessage('Erro ao executar procedure: ' + E.Message);
+  end;
+
+  AtualizarGrid;  // Atualiza o grid após a execução
+end;
+
+procedure TDataModule1.AtualizarGrid;
+begin
+  FDQuery1.SQL.Text := 'SELECT * FROM Produtos';  // Supondo que você queira mostrar produtos
+  FDQuery1.Open;
+end;
+
+end.
+

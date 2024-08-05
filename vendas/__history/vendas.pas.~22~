@@ -1,0 +1,98 @@
+unit vendas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, DataModule, Data.FMTBcd, Data.SqlExpr;
+
+type
+  TForm1 = class(TForm)
+    Panel1: TPanel;
+    Label1: TLabel;
+    edtCodProduto: TEdit;
+    Label2: TLabel;
+    edtQuantidade: TEdit;
+    Label3: TLabel;
+    edtVlUnitario: TEdit;
+    Label4: TLabel; // Novo Label para Descrição
+    edtDescricao: TEdit; // Novo Edit para Descrição
+    Label5: TLabel; // Novo Label para Preço de Venda
+    edtPrecVenda: TEdit; // Novo Edit para Preço de Venda
+    btnOk: TButton;
+    DBGrid1: TDBGrid;
+    dtsObtemProdutos: TDataSource;
+    procedure FormCreate(Sender: TObject);
+    procedure btnOkClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure SalvarProduto;
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  // Carregar os produtos ao iniciar o formulário
+  DataModule1.CarregarProdutos;
+  dtsObtemProdutos.DataSet := DataModule1.FDQueryProdutos;
+  DBGrid1.DataSource := dtsObtemProdutos;
+end;
+
+procedure TForm1.btnOkClick(Sender: TObject);
+begin
+  SalvarProduto;
+end;
+
+procedure TForm1.SalvarProduto;
+var
+  Codigo: Integer;
+  ValorUnitario: Currency;
+  Quantidade: Integer;
+  Descricao: string;
+  PrecoVenda: Currency;
+  Condicao: Char;
+begin
+  try
+    // Obter dados dos campos
+    Codigo := StrToInt(edtCodProduto.Text);
+    ValorUnitario := StrToCurr(edtVlUnitario.Text);
+    Quantidade := StrToInt(edtQuantidade.Text);
+    Descricao := edtDescricao.Text;
+    PrecoVenda := StrToCurr(edtPrecVenda.Text);
+
+    // Definir a condição ('I' para inserir, 'R' para remover)
+    Condicao := 'I'; // Alterar para 'R' se desejar remover
+
+    // Chama o método para inserir ou remover o produto
+    DataModule1.InserirOuRemoverProduto(Condicao, Codigo, Quantidade, ValorUnitario, Descricao, PrecoVenda);
+
+    // Atualizar o grid
+    dtsObtemProdutos.DataSet.Refresh; // Atualize o DataSet associado ao DataSource
+
+    // Exibir mensagem de sucesso
+    if Condicao = 'I' then
+      ShowMessage('Produto inserido com sucesso.');
+
+    // Limpar os campos após salvar
+    edtCodProduto.Text := '';
+    edtVlUnitario.Text := '';
+    edtQuantidade.Text := '';
+    edtDescricao.Text := '';
+    edtPrecVenda.Text := '';
+  except
+    on E: Exception do
+      ShowMessage('Erro ao salvar o produto: ' + E.Message);
+  end;
+end;
+
+end.
+
